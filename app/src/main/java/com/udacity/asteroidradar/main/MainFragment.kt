@@ -20,6 +20,8 @@ class MainFragment : Fragment() {
 
         binding.viewModel = viewModel
 
+        //val test = viewModel.asteroidList
+
         setHasOptionsMenu(true)
 
         return binding.root
