@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools">
+
+	<data>
+
+		<variable
+			name="asteroid"
+			type="com.udacity.asteroidradar.domain.Asteroid" />
+
+		<!--variable
+			name="asteroidCallback"
+			type="com.example.android.devbyteviewer.ui.VideoClick" /-->
+	</data>
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		tools:background="@color/colorPrimaryDark">
+
+		<TextView
+			android:id="@+id/asteroid_item_text"
+			style="@style/ItemTextStyle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="4dp"
+			android:layout_marginTop="16dp"
+			android:text="@{@string/item_text(asteroid.id, asteroid.codename)}"
+			app:layout_constraintEnd_toStartOf="@id/status_image"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			tools:text="68347 (2001 KB67)" />
+
+
+		<TextView
+			android:id="@+id/asteroid_subitem_text"
+			style="@style/SubItemTextStyle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:layout_marginBottom="16dp"
+			android:text="@{asteroid.closeApproachDate}"
+			android:textAlignment="viewStart"
+			app:layout_constraintEnd_toStartOf="@id/status_image"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toBottomOf="@id/asteroid_item_text"
+			tools:text="2024-12-25" />
+
+		<ImageView
+			android:id="@+id/status_image"
+			android:layout_width="24dp"
+			android:layout_height="24dp"
+			android:src="@{asteroid.isPotentiallyHazardous ? @drawable/ic_status_potentially_hazardous : @drawable/ic_status_normal}"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			tools:srcCompat="@drawable/ic_status_normal" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
