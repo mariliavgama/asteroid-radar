@@ -1,8 +1,12 @@
 package com.udacity.asteroidradar.main
 
 import android.os.Bundle
-import android.view.*
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -71,7 +75,6 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.asteroidList.observe(viewLifecycleOwner) { asteroids ->
-            Toast.makeText(context, "Asteroids count: " + asteroids.count(), Toast.LENGTH_LONG).show()
             asteroids?.apply {
                 viewModelAdapter?.asteroids = asteroids
             }
@@ -84,6 +87,7 @@ class MainFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        viewModel.onClear()
         return true
     }
 }

@@ -10,7 +10,9 @@ import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.domain.Asteroid
 import com.udacity.asteroidradar.repository.AsteroidsRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -37,6 +39,22 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun displayAsteroidDetailsComplete() { _navigateToSelectedAsteroid.value = null }
 
+    private suspend fun clear() {
+        withContext(Dispatchers.IO) {
+            database.asteroidDao.clear()
+        }
+    }
+
+    /**
+     * Executes when the Delete asteroid menu item is clicked.
+     */
+    fun onClear() {
+        viewModelScope.launch {
+            // Clear the database table.
+            clear()
+        }
+    }
+
     /**
      * Factory for constructing MainViewModel with parameter
      */
@@ -49,4 +67,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             throw IllegalArgumentException("Unable to construct viewmodel")
         }
     }
+
+
 }
