@@ -1,7 +1,5 @@
 package com.udacity.asteroidradar.main
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
@@ -9,6 +7,7 @@ import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.udacity.asteroidradar.R
@@ -47,22 +46,17 @@ class MainFragment : Fragment() {
 
         binding.viewModel = viewModel
 
-        viewModelAdapter = AsteroidAdapter(AsteroidClick {
-            // When an asteroid is clicked this block or lambda will be called by AsteroidAdapter
-
-            // context is not around, we can safely discard this click since the Fragment is no
-            // longer on the screen
-            val packageManager = context?.packageManager ?: return@AsteroidClick
-
-            // Try to generate a direct intent to the YouTube app
-            /*var intent = Intent(Intent.ACTION_VIEW, it.launchUri)
-            if(intent.resolveActivity(packageManager) == null) {
-                // YouTube app isn't found, use the web url
-                intent = Intent(Intent.ACTION_VIEW, Uri.parse(it.url))
-            }
-
-            startActivity(intent)*/
+        viewModelAdapter = AsteroidAdapter(AsteroidAdapter.OnClickListener{
+            // When an asteroid is clicked the asteroids details will be displayed
+            viewModel.displayAsteroidDetails(asteroid = it)
         })
+
+        viewModel.navigateToSelectedAsteroid.observe(viewLifecycleOwner) {
+            if (null != it) {
+                this.findNavController().navigate(MainFragmentDirections.actionShowDetail(it))
+                viewModel.displayAsteroidDetailsComplete()
+            }
+        }
 
         binding.root.findViewById<RecyclerView>(R.id.asteroid_recycler).apply {
             layoutManager = LinearLayoutManager(context)
@@ -95,22 +89,9 @@ class MainFragment : Fragment() {
 }
 
 /**
- * Click listener for Asteroids. By giving the block a name it helps a reader understand what it does.
- *
- */
-class AsteroidClick(val block: (Asteroid) -> Unit) {
-    /**
-     * Called when an asteroid is clicked
-     *
-     * @param asteroid the asteroid that was clicked
-     */
-    fun onClick(asteroid: Asteroid) = block(asteroid)
-}
-
-/**
  * RecyclerView Adapter for setting up data binding on the items in the list.
  */
-class AsteroidAdapter(val callback: AsteroidClick) : RecyclerView.Adapter<AsteroidViewHolder>() {
+class AsteroidAdapter(private val onClickListener: OnClickListener) : RecyclerView.Adapter<AsteroidViewHolder>() {
 
     /**
      * The asteroids that our Adapter will show
@@ -139,17 +120,19 @@ class AsteroidAdapter(val callback: AsteroidClick) : RecyclerView.Adapter<Astero
     override fun getItemCount() = asteroids.size
 
     /**
-     * Called by RecyclerView to display the data at the specified position. This method should
-     * update the contents of the {@link ViewHolder#itemView} to reflect the item at the given
-     * position.
+     * Called by RecyclerView to display the data at the specified position.
      */
     override fun onBindViewHolder(holder: AsteroidViewHolder, position: Int) {
-        holder.viewDataBinding.also {
-            it.asteroid = asteroids[position]
-            //it.videoCallback = callback
+        val asteroid = asteroids[position]
+        holder.itemView.setOnClickListener {
+            onClickListener.onClick(asteroid)
         }
+        holder.bind(asteroid)
     }
 
+    class OnClickListener(val clickListener: (asteroid: Asteroid) -> Unit) {
+        fun onClick(asteroid: Asteroid) = clickListener(asteroid)
+    }
 }
 
 /**
@@ -157,6 +140,12 @@ class AsteroidAdapter(val callback: AsteroidClick) : RecyclerView.Adapter<Astero
  */
 class AsteroidViewHolder(val viewDataBinding: AsteroidItemBinding) :
     RecyclerView.ViewHolder(viewDataBinding.root) {
+
+    fun bind(asteroid: Asteroid) {
+        viewDataBinding.asteroid = asteroid
+        viewDataBinding.executePendingBindings()
+    }
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.asteroid_item

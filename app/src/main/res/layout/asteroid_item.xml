@@ -8,10 +8,6 @@
 		<variable
 			name="asteroid"
 			type="com.udacity.asteroidradar.domain.Asteroid" />
-
-		<!--variable
-			name="asteroidCallback"
-			type="com.example.android.devbyteviewer.ui.VideoClick" /-->
 	</data>
 
 	<androidx.constraintlayout.widget.ConstraintLayout
@@ -52,9 +48,9 @@
 			android:layout_width="24dp"
 			android:layout_height="24dp"
 			android:src="@{asteroid.isPotentiallyHazardous ? @drawable/ic_status_potentially_hazardous : @drawable/ic_status_normal}"
+			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toTopOf="parent"
-			app:layout_constraintBottom_toBottomOf="parent"
 			tools:srcCompat="@drawable/ic_status_normal" />
 
 	</androidx.constraintlayout.widget.ConstraintLayout>
