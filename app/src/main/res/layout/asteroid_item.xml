@@ -47,7 +47,7 @@
 			android:id="@+id/status_image"
 			android:layout_width="24dp"
 			android:layout_height="24dp"
-			android:src="@{asteroid.isPotentiallyHazardous ? @drawable/ic_status_potentially_hazardous : @drawable/ic_status_normal}"
+			app:statusIcon="@{asteroid.potentiallyHazardous}"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"
 			app:layout_constraintTop_toTopOf="parent"

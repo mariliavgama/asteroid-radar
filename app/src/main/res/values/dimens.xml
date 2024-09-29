@@ -3,4 +3,5 @@
 	<dimen name="header_text_size">24sp</dimen>
 	<dimen name="item_text_size">22sp</dimen>
 	<dimen name="subitem_text_size">18sp</dimen>
+	<dimen name="picture_of_day_height">220dp</dimen>
 </resources>
