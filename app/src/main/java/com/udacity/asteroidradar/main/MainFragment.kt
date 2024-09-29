@@ -10,10 +10,12 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.AsteroidItemBinding
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
@@ -53,6 +55,21 @@ class MainFragment : Fragment() {
         viewModelAdapter = AsteroidAdapter(AsteroidAdapter.OnClickListener{
             // When an asteroid is clicked the asteroids details will be displayed
             viewModel.displayAsteroidDetails(asteroid = it)
+        })
+
+        // Add an Observer on the state variable for showing a Snackbar message
+        // when and request error occurs.
+        viewModel.status.observe(viewLifecycleOwner, Observer {
+            if (it == ApiStatus.ERROR) { // Observed state is true.
+                Snackbar.make(
+                    requireActivity().findViewById(android.R.id.content),
+                    getString(R.string.error_message),
+                    Snackbar.LENGTH_LONG
+                ).show()
+                // Reset state to make sure the snackbar is only shown once, even if the device
+                // has a configuration change.
+                viewModel.doneStatus()
+            }
         })
 
         viewModel.navigateToSelectedAsteroid.observe(viewLifecycleOwner) {

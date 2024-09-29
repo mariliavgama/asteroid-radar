@@ -1,6 +1,7 @@
 package com.udacity.asteroidradar.main
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -15,6 +16,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+enum class ApiStatus { LOADING, ERROR, DONE }
+
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val database = getDatabase(application)
@@ -27,6 +30,12 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val pictureOfDay: LiveData<PictureOfDay>
         get() = _pictureOfDay
 
+    // The internal MutableLiveData String that stores the status of the most recent request
+    private val _status = MutableLiveData<ApiStatus>()
+    // The external immutable LiveData for the request status String
+    val status: LiveData<ApiStatus>
+        get() = _status
+
     private val _navigateToSelectedAsteroid = MutableLiveData<Asteroid?>()
 
     val navigateToSelectedAsteroid: LiveData<Asteroid?>
@@ -34,8 +43,14 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     init {
         viewModelScope.launch {
-            asteroidsRepository.refreshAsteroids()
-            _pictureOfDay.value = asteroidsRepository.getPictureOfDay()
+            _status.value = ApiStatus.LOADING
+            try {
+                asteroidsRepository.refreshAsteroids()
+                _pictureOfDay.value = asteroidsRepository.getPictureOfDay()
+                _status.value = ApiStatus.DONE
+            } catch (e: Exception) {
+                _status.value = ApiStatus.ERROR
+            }
         }
     }
 
@@ -44,6 +59,10 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun displayAsteroidDetailsComplete() { _navigateToSelectedAsteroid.value = null }
+
+    fun doneStatus() {
+        _status.value = ApiStatus.DONE
+    }
 
     private suspend fun clear() {
         withContext(Dispatchers.IO) {

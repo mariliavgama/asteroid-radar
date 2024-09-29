@@ -3,30 +3,39 @@ package com.udacity.asteroidradar
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import com.udacity.asteroidradar.Constants.IMAGE_MEDIA_TYPE
+import com.udacity.asteroidradar.domain.PictureOfDay
+import com.udacity.asteroidradar.main.ApiStatus
 
 /**
  * Binding adapter used to hide the spinner once data is available
  */
-@BindingAdapter("goneIfNotNull")
-fun goneIfNotNull(view: View, it: Any?) {
-    view.visibility = if (it != null) View.GONE else View.VISIBLE
+@BindingAdapter("loadingStatus")
+fun loadingStatus(view: View, status: ApiStatus?) {
+    view.isVisible = status == ApiStatus.LOADING
 }
 
 /**
  * Binding adapter used to display images from URL using Glide
  */
 @BindingAdapter("imageUrl")
-fun setImageUrl(imageView: ImageView, url: String?) {
-    Glide.with(imageView.context)
-        .load(url)
-        .error(R.drawable.placeholder_picture_of_day)
-        .transition(DrawableTransitionOptions.withCrossFade(200))
-        .apply(RequestOptions.centerCropTransform())
-        .into(imageView)
+fun setImageUrl(imageView: ImageView, pictureOfDay: PictureOfDay?) {
+    pictureOfDay?.let {
+        if (it.mediaType == IMAGE_MEDIA_TYPE)
+            Glide.with(imageView.context)
+                .load(it.url)
+                .error(R.drawable.placeholder_picture_of_day)
+                .transition(DrawableTransitionOptions.withCrossFade(200))
+                .apply(RequestOptions.centerCropTransform())
+                .into(imageView)
+
+        imageView.contentDescription = it.title
+    }
 }
 
 @BindingAdapter("statusIcon")
