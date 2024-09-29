@@ -3,6 +3,7 @@ package com.udacity.asteroidradar
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.getString
 import androidx.core.view.isVisible
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
@@ -21,12 +22,15 @@ fun loadingStatus(view: View, status: ApiStatus?) {
 }
 
 /**
- * Binding adapter used to display images from URL using Glide
+ * Binding adapter used to display the Picture of the Day from URL using Glide
  */
 @BindingAdapter("imageUrl")
 fun setImageUrl(imageView: ImageView, pictureOfDay: PictureOfDay?) {
+    val context = imageView.context
+    imageView.contentDescription = getString(context, R.string.this_is_nasa_s_picture_of_day_showing_nothing_yet)
+
     pictureOfDay?.let {
-        if (it.mediaType == IMAGE_MEDIA_TYPE)
+        if (it.mediaType == IMAGE_MEDIA_TYPE) {
             Glide.with(imageView.context)
                 .load(it.url)
                 .error(R.drawable.placeholder_picture_of_day)
@@ -34,7 +38,11 @@ fun setImageUrl(imageView: ImageView, pictureOfDay: PictureOfDay?) {
                 .apply(RequestOptions.centerCropTransform())
                 .into(imageView)
 
-        imageView.contentDescription = it.title
+            imageView.contentDescription = String.format(
+                context.getString(R.string.nasa_picture_of_day_content_description_format),
+                it.title
+            )
+        }
     }
 }
 
@@ -49,10 +57,17 @@ fun bindAsteroidStatusImage(imageView: ImageView, isHazardous: Boolean) {
 
 @BindingAdapter("asteroidStatusImage")
 fun bindDetailsStatusImage(imageView: ImageView, isHazardous: Boolean) {
+    val context = imageView.context
     if (isHazardous) {
-        imageView.setImageResource(R.drawable.asteroid_hazardous)
+        imageView.apply {
+            setImageResource(R.drawable.asteroid_hazardous)
+            contentDescription = getString(context, R.string.potentially_hazardous_asteroid_image)
+        }
     } else {
-        imageView.setImageResource(R.drawable.asteroid_safe)
+        imageView.apply {
+            setImageResource(R.drawable.asteroid_safe)
+            contentDescription = getString(context, R.string.not_hazardous_asteroid_image)
+        }
     }
 }
 
