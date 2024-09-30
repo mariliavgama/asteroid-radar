@@ -52,7 +52,7 @@ class MainFragment : Fragment() {
 
         binding.viewModel = viewModel
 
-        viewModelAdapter = AsteroidAdapter(AsteroidAdapter.OnClickListener{
+        viewModelAdapter = AsteroidAdapter(AsteroidAdapter.OnClickListener {
             // When an asteroid is clicked the asteroids details will be displayed
             viewModel.displayAsteroidDetails(asteroid = it)
         })
@@ -104,7 +104,12 @@ class MainFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        viewModel.onClear()
+        when (item.itemId) {
+            R.id.show_week_menu -> viewModel.onViewWeek()
+            R.id.show_today_menu -> viewModel.onViewToday()
+            R.id.show_saved_menu -> viewModel.onViewSaved()
+            R.id.delete_asteroids -> viewModel.onClear()
+        }
         return true
     }
 }

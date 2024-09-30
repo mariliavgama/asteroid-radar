@@ -1,7 +1,6 @@
 package com.udacity.asteroidradar.main
 
 import android.app.Application
-import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -68,6 +67,35 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         withContext(Dispatchers.IO) {
             database.asteroidDao.clear()
         }
+    }
+
+    private suspend fun viewToday() {
+        withContext(Dispatchers.IO) {
+            asteroidsRepository.viewTodayAsteroids()
+        }
+    }
+
+    /**
+     * Executes when the View week asteroids menu item is clicked.
+     */
+    fun onViewWeek() {
+        // TODO
+    }
+
+    /**
+     * Executes when the View today asteroids menu item is clicked.
+     */
+    fun onViewToday() {
+        viewModelScope.launch {
+            viewToday()
+        }
+    }
+
+    /**
+     * Executes when the View saved asteroids menu item is clicked.
+     */
+    fun onViewSaved() {
+        // TODO
     }
 
     /**
