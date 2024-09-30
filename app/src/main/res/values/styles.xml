@@ -7,20 +7,22 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
-    
-    <style name="HeaderTextStyle">
+
+    <style name="TextStyle">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="HeaderTextStyle" parent="TextStyle">
         <item name="android:textSize">@dimen/header_text_size</item>
         <item name="android:background">@color/header_background</item>
     </style>
 
-    <style name="ItemTextStyle" parent="HeaderTextStyle">
+    <style name="ItemTextStyle" parent="TextStyle">
         <item name="android:textSize">@dimen/item_text_size</item>
-        <item name="android:background">@null</item>
     </style>
 
-    <style name="SubItemTextStyle" parent="ItemTextStyle">
+    <style name="SubItemTextStyle" parent="TextStyle">
         <item name="android:textSize">@dimen/subitem_text_size</item>
     </style>
 
