@@ -21,7 +21,15 @@ import java.util.Locale
 
 class AsteroidsRepository(private val database: AsteroidsDatabase) {
 
-    var asteroids: LiveData<List<Asteroid>> = database.asteroidDao.getAsteroidsByStartDate(getTodayDate()).map {
+    val asteroidsThisWeek: LiveData<List<Asteroid>> = database.asteroidDao.getAsteroidsByStartDate(getTodayDate()).map {
+        it.asDomainModel()
+    }
+
+    val asteroidsToday: LiveData<List<Asteroid>> = database.asteroidDao.getAsteroidsByTargetDate(getTodayDate()).map {
+        it.asDomainModel()
+    }
+
+    val asteroidsSaved: LiveData<List<Asteroid>> = database.asteroidDao.getAsteroids().map {
         it.asDomainModel()
     }
 
@@ -34,24 +42,6 @@ class AsteroidsRepository(private val database: AsteroidsDatabase) {
 
     suspend fun getPictureOfDay(): PictureOfDay {
         return Network.asteroidradar.getPictureOfDay(API_KEY).await()
-    }
-
-    fun viewWeekAsteroids() {
-        asteroids = database.asteroidDao.getAsteroidsByStartDate(getTodayDate()).map {
-            it.asDomainModel()
-        }
-    }
-
-    fun viewTodayAsteroids() {
-        asteroids = database.asteroidDao.getAsteroidsByTargetDate(getTodayDate()).map {
-            it.asDomainModel()
-        }
-    }
-
-    fun viewSavedAsteroids() {
-        asteroids = database.asteroidDao.getAsteroids().map {
-            it.asDomainModel()
-        }
     }
 
     private fun getTodayDate(): String {

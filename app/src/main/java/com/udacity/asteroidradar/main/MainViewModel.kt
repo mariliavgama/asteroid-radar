@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.domain.Asteroid
@@ -16,13 +17,23 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 enum class ApiStatus { LOADING, ERROR, DONE }
+enum class SortType { WEEK, TODAY, SAVED }
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val database = getDatabase(application)
     private val asteroidsRepository = AsteroidsRepository(database)
 
-    val asteroidList = asteroidsRepository.asteroids
+    private val _sortType = MutableLiveData<SortType>()
+
+    val asteroidList: LiveData<List<Asteroid>> = _sortType.switchMap { sortType ->
+        // Fetch the corresponding asteroid list from the data source
+        when (sortType) {
+            SortType.WEEK -> asteroidsRepository.asteroidsThisWeek
+            SortType.TODAY -> asteroidsRepository.asteroidsToday
+            SortType.SAVED -> asteroidsRepository.asteroidsSaved
+        }
+    }
 
     private val _pictureOfDay = MutableLiveData<PictureOfDay>()
 
@@ -47,6 +58,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 asteroidsRepository.refreshAsteroids()
                 _pictureOfDay.value = asteroidsRepository.getPictureOfDay()
                 _status.value = ApiStatus.DONE
+                _sortType.value = SortType.WEEK
             } catch (e: Exception) {
                 _status.value = ApiStatus.ERROR
             }
@@ -69,33 +81,31 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    private suspend fun viewToday() {
-        withContext(Dispatchers.IO) {
-            asteroidsRepository.viewTodayAsteroids()
-        }
-    }
-
     /**
      * Executes when the View week asteroids menu item is clicked.
      */
-    fun onViewWeek() {
-        // TODO
+    fun onSortByWeek() {
+        viewModelScope.launch {
+            _sortType.value = SortType.WEEK
+        }
     }
 
     /**
      * Executes when the View today asteroids menu item is clicked.
      */
-    fun onViewToday() {
+    fun onSortByToday() {
         viewModelScope.launch {
-            viewToday()
+            _sortType.value = SortType.TODAY
         }
     }
 
     /**
      * Executes when the View saved asteroids menu item is clicked.
      */
-    fun onViewSaved() {
-        // TODO
+    fun onSortBySaved() {
+        viewModelScope.launch {
+            _sortType.value = SortType.SAVED
+        }
     }
 
     /**

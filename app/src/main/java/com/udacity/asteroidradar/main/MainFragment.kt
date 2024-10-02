@@ -105,9 +105,9 @@ class MainFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.show_week_menu -> viewModel.onViewWeek()
-            R.id.show_today_menu -> viewModel.onViewToday()
-            R.id.show_saved_menu -> viewModel.onViewSaved()
+            R.id.sort_by_week_menu -> viewModel.onSortByWeek()
+            R.id.sort_by_today_menu -> viewModel.onSortByToday()
+            R.id.sort_by_saved_menu -> viewModel.onSortBySaved()
             R.id.delete_asteroids -> viewModel.onClear()
         }
         return true
