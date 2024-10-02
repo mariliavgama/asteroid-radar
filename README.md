@@ -20,3 +20,10 @@ When asteroids are downloaded, they are saved in the local database. By default,
 * LiveData
 * Data Binding
 * Navigation
+
+## Screenshots
+
+![Screenshot_20241001_213619](https://github.com/user-attachments/assets/f476a3c5-fff4-4dae-b32d-982496a01492)
+![Screenshot_20241001_213632](https://github.com/user-attachments/assets/bf4f1f9a-2a95-4032-82de-98aa92954894)
+![Screenshot_20241001_213644](https://github.com/user-attachments/assets/1371c5c2-ef0a-474b-8d35-9b578aabeb3d)
+![Screenshot_20241001_213654](https://github.com/user-attachments/assets/c25cdfcd-0fe6-4772-aeb3-7d2f76836a7f)
