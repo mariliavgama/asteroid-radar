@@ -44,8 +44,8 @@
 
 		<ImageView
 			android:id="@+id/status_image"
-			android:layout_width="24dp"
-			android:layout_height="24dp"
+			android:layout_width="@dimen/image_size"
+			android:layout_height="@dimen/image_size"
 			app:statusIcon="@{asteroid.potentiallyHazardous}"
 			app:layout_constraintBottom_toBottomOf="parent"
 			app:layout_constraintEnd_toEndOf="parent"

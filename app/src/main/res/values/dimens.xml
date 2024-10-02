@@ -9,6 +9,7 @@
 	<dimen name="default_margin">16dp</dimen>
 	<dimen name="large_margin">24dp</dimen>
 	<dimen name="default_padding">16dp</dimen>
+	<dimen name="image_size">24dp</dimen>
 	<!-- ConstraintLayout match constraint -->
 	<dimen name="match_constraint">0dp</dimen>
 </resources>
